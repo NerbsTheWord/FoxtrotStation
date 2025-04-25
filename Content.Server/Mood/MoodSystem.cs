@@ -1,4 +1,4 @@
-﻿using Content.Server.Chat.Managers;
+using Content.Server.Chat.Managers;
 using Content.Server.Popups;
 using Content.Shared.Alert;
 using Content.Shared.Chat;
@@ -19,6 +19,7 @@ using Robust.Server.Player;
 using Robust.Shared.Player;
 using Robust.Shared.Configuration;
 using Content.Shared.CCVar;
+using System.Threading;
 
 namespace Content.Server.Mood;
 
@@ -32,6 +33,10 @@ public sealed class MoodSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
 
+    // Floof - Improve ChemAddMoodlet effect guidebook description
+    public const string LocMoodEffectNamePrefix = "mood-effect-name-";
+    public const string LocMoodCategoryNamePrefix = "mood-category-name-";
+    // Floof changes end
 
     public override void Initialize()
     {
@@ -101,6 +106,23 @@ public sealed class MoodSystem : EntitySystem
         ApplyEffect(uid, component, prototype, ev.EffectModifier, ev.EffectOffset);
     }
 
+    // DEN: Bugfix to make addictions work. Previous timeout timers are cancelled before reapplying the timeout.
+    private void StartEffectTimeout(EntityUid uid, MoodComponent mood, MoodEffectPrototype effect)
+    {
+        if (effect.Timeout == 0)
+            return;
+
+        if (mood.EffectTimeoutSources.TryGetValue(effect.ID, out var oldTimeoutSource))
+            oldTimeoutSource.Cancel();
+
+        CancellationTokenSource timeoutSource = new CancellationTokenSource();
+        Timer.Spawn(TimeSpan.FromSeconds(effect.Timeout),
+            () => RemoveTimedOutEffect(uid, effect.ID, effect.Category),
+            timeoutSource.Token);
+
+        mood.EffectTimeoutSources[effect.ID] = timeoutSource;
+    }
+
     private void ApplyEffect(EntityUid uid, MoodComponent component, MoodEffectPrototype prototype, float eventModifier = 1, float eventOffset = 0)
     {
         // Apply categorised effect
@@ -121,8 +143,7 @@ public sealed class MoodSystem : EntitySystem
             else
                 component.CategorisedEffects.Add(prototype.Category, prototype.ID);
 
-            if (prototype.Timeout != 0)
-                Timer.Spawn(TimeSpan.FromSeconds(prototype.Timeout), () => RemoveTimedOutEffect(uid, prototype.ID, prototype.Category));
+            StartEffectTimeout(uid, component, prototype); // DEN: Moves this into its own function.
         }
         // Apply uncategorised effect
         else
@@ -139,9 +160,7 @@ public sealed class MoodSystem : EntitySystem
                 SendEffectText(uid, prototype);
 
             component.UncategorisedEffects.Add(prototype.ID, moodChange);
-
-            if (prototype.Timeout != 0)
-                Timer.Spawn(TimeSpan.FromSeconds(prototype.Timeout), () => RemoveTimedOutEffect(uid, prototype.ID));
+            StartEffectTimeout(uid, component, prototype); // DEN: Moves this into its own function.
         }
 
         RefreshMood(uid, component);

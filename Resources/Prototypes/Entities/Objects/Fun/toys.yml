@@ -53,6 +53,24 @@
         reagents:
         - ReagentId: Fiber
           Quantity: 10
+  - type: ContainerContainer
+    containers:
+      stash: !type:ContainerSlot {}
+  - type: Speech
+    speechVerb: Default # for pais (In the secret stash)
+  - type: SecretStash
+    secretStashName: secret-stash-plushie
+    blacklist:
+      components:
+      - SecretStash # Prevents being able to insert plushies inside each other (infinite plush)!
+      - NukeDisk # Could confuse the nukies if they don't know that plushies have a stash.
+      tags:
+      - QuantumSpinInverter # It will cause issues with the grinder...
+      - FakeNukeDisk # So you can't tell if the nuke disk is real or fake depending on if it can be inserted or not.
+  - type: ToolOpenable
+    openToolQualityNeeded: Slicing
+    closeToolQualityNeeded: Slicing # Should probably be stitching or something if that gets added
+    name: secret-stash-plushie
 
 - type: entity
   parent: BasePlushie
@@ -119,7 +137,7 @@
     - type: Item
       size: Normal
     - type: Sprite
-      sprite: DeltaV/Mobs/Ghosts/revenant.rsi # DeltaV - Custom revenant sprite
+      sprite: _DV/Mobs/Ghosts/revenant.rsi # DeltaV - Custom revenant sprite
       state: icon
       noRot: true
     - type: Construction
@@ -314,6 +332,8 @@
     equippedPrefix: lizard
     slots:
     - HEAD
+  - type: Speech
+    speechVerb: Reptilian # for pais (In the secret stash)
 
 - type: entity
   parent: PlushieLizard
@@ -817,7 +837,7 @@
   parent: BasePlushie
   id: PlushieArachne
   name: Arachne plushie
-  description: A plushie of an Arachne, a half human, half spider creature. Why does it look familiar?
+  description: A plushie of an Arachne, a half human, half spider creature.
   components:
   - type: Sprite
     state: plushie_arachne
@@ -1103,16 +1123,16 @@
     state: plushie_vulp
   - type: EmitSoundOnUse
     sound:
-      path: /Audio/DeltaV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
   - type: EmitSoundOnLand
     sound:
-      path: /Audio/DeltaV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
   - type: EmitSoundOnActivate
     sound:
-      path: /Audio/DeltaV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
   - type: MeleeWeapon
     soundHit:
-      path: /Audio/DeltaV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
 
 - type: entity
   parent: PlushieVulp
@@ -1772,10 +1792,6 @@
     - type: Sprite
       sprite: Objects/Fun/rubber_hammer.rsi
       state: icon
-    - type: WeaponRandom
-      damageBonus:
-          types:
-              Blunt: 1000
     - type: StaminaDamageOnHit
       damage: 8
     - type: Item

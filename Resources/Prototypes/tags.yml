@@ -619,6 +619,9 @@
   id: DrinkBottle
 
 - type: Tag
+  id: Dropper
+
+- type: Tag
   id: Duck
 
 - type: Tag
@@ -1029,6 +1032,9 @@
   id: Mouse
 
 - type: Tag
+  id: Mousetrap
+
+- type: Tag
   id: Multitool
 
 - type: Tag
@@ -1051,6 +1057,9 @@
 
 - type: Tag
   id: Nugget # for chicken nuggets
+
+- type: Tag
+  id: FakeNukeDisk
 
 - type: Tag
   id: NukeOpsUplink
@@ -1263,6 +1272,18 @@
 
 - type: Tag
   id: SecBeltEquip
+
+- type: Tag
+  id: SecurePlasmaWindoor
+
+- type: Tag
+  id: SecureUraniumWindoor
+
+- type: Tag
+  id: SecureWindoor
+
+- type: Tag
+  id: SecurityHelmet
 
 - type: Tag
   id: SecwayKeys
@@ -1558,4 +1579,4 @@
   id: UnathiEmotes
 
 - type: Tag
-  id: FeroxiEmotes
+  id: KitsuneEmotes

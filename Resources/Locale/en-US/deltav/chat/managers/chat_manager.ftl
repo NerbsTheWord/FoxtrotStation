@@ -33,4 +33,7 @@ chat-speech-verb-kitsune-1 = yelps
 chat-speech-verb-kitsune-2 = barks
 chat-speech-verb-kitsune-3 = whines
 chat-speech-verb-kitsune-4 = yips
+<<<<<<< HEAD
 
+=======
+>>>>>>> 328a1afd4eacb172fbb72eaafbe8edead9006ddf

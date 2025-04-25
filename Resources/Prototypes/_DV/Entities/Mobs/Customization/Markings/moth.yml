@@ -10,7 +10,7 @@
         !type:SimpleColoring
           color: "#FFFFFF"
   sprites:
-  - sprite: DeltaV/Mobs/Customization/Moth/moth_wings.rsi
+  - sprite: _DV/Mobs/Customization/Moth/moth_wings.rsi
     state: selene
 
 - type: marking
@@ -19,9 +19,9 @@
   markingCategory: Tail
   speciesRestriction: [Moth]
   sprites:
-  - sprite: DeltaV/Mobs/Customization/Moth/moth_wings.rsi
+  - sprite: _DV/Mobs/Customization/Moth/moth_wings.rsi
     state: selene_primary
-  - sprite: DeltaV/Mobs/Customization/Moth/moth_wings.rsi
+  - sprite: _DV/Mobs/Customization/Moth/moth_wings.rsi
     state: selene_secondary
-  - sprite: DeltaV/Mobs/Customization/Moth/moth_wings.rsi
+  - sprite: _DV/Mobs/Customization/Moth/moth_wings.rsi
     state: selene_tertiary

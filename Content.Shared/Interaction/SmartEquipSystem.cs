@@ -34,6 +34,9 @@ public sealed class SmartEquipSystem : EntitySystem
         CommandBinds.Builder
             .Bind(ContentKeyFunctions.SmartEquipBackpack, InputCmdHandler.FromDelegate(HandleSmartEquipBackpack, handle: false, outsidePrediction: false))
             .Bind(ContentKeyFunctions.SmartEquipBelt, InputCmdHandler.FromDelegate(HandleSmartEquipBelt, handle: false, outsidePrediction: false))
+            .Bind(ContentKeyFunctions.SmartEquipSuitStorage, InputCmdHandler.FromDelegate(HandleSmartEquipSuitStorage, handle: false, outsidePrediction: false))
+            .Bind(ContentKeyFunctions.SmartEquipPocket1, InputCmdHandler.FromDelegate(HandleSmartEquipPocket1, handle: false, outsidePrediction: false))
+            .Bind(ContentKeyFunctions.SmartEquipPocket2, InputCmdHandler.FromDelegate(HandleSmartEquipPocket2, handle: false, outsidePrediction: false))
             .Register<SmartEquipSystem>();
     }
 
@@ -54,7 +57,52 @@ public sealed class SmartEquipSystem : EntitySystem
         HandleSmartEquip(session, "belt");
     }
 
-    private void HandleSmartEquip(ICommonSession? session, string equipmentSlot)
+    private void HandleSmartEquipSuitStorage(ICommonSession? session)
+    {
+        HandleSmartEquip(session, "suitstorage", true);
+    }
+
+    private void HandleSmartEquipPocket1(ICommonSession? session)
+    {
+        HandleSmartEquip(session, "pocket1", true);
+    }
+
+    private void HandleSmartEquipPocket2(ICommonSession? session)
+    {
+        HandleSmartEquip(session, "pocket2", true);
+    }
+
+    private void SaveLocation(StorageComponent storage, EntityUid itemUid)
+    {
+        var id = IoCManager.Resolve<IEntityManager>().GetNetEntity(itemUid).ToString();
+        storage.StoredItems.TryGetValue(itemUid, out var location);
+
+        if (!storage.SavedLocations.TryGetValue(id, out var locations))
+            locations = new();
+
+        if (locations.Contains(location))
+            return;
+
+        locations.Add(location);
+        storage.SavedLocations[id] = locations;
+    }
+
+
+    private ItemStorageLocation? LoadLocation(StorageComponent storage, EntityUid itemUid)
+    {
+        var id = IoCManager.Resolve<IEntityManager>().GetNetEntity(itemUid).ToString();
+
+        if (!storage.SavedLocations.TryGetValue(id, out var locations))
+            return null;
+
+        if (locations.Count == 0)
+            return null;
+
+        return locations[^1];
+    }
+
+
+    private void HandleSmartEquip(ICommonSession? session, string equipmentSlot, bool ignoreStorage = false)
     {
         if (session is not { } playerSession)
             return;
@@ -120,28 +168,29 @@ public sealed class SmartEquipSystem : EntitySystem
             }
 
             _hands.TryDrop(uid, hands.ActiveHand, handsComp: hands);
-            _inventory.TryEquip(uid, handItem.Value, equipmentSlot, predicted: true, checkDoafter:true);
+            _inventory.TryEquip(uid, handItem.Value, equipmentSlot, predicted: true, checkDoafter: true);
             return;
         }
 
         // case 2 (storage item):
-        if (TryComp<StorageComponent>(slotItem, out var storage))
+        if (TryComp<StorageComponent>(slotItem, out var storage) && !ignoreStorage)
         {
-            switch (handItem)
+            if (handItem == null)
             {
-                case null when storage.Container.ContainedEntities.Count == 0:
+                if (storage.Container.ContainedEntities.Count == 0)
+                {
                     if (storage.SmartEquipSelfIfEmpty)
-                    {
                         SmartEquipItem(slotItem, uid, equipmentSlot, inventory, hands);
-                        return;
-                    }
-                    _popup.PopupClient(emptyEquipmentSlotString, uid, uid);
+                    else
+                        _popup.PopupClient(emptyEquipmentSlotString, uid, uid);
                     return;
-                case null:
-                    var removing = storage.Container.ContainedEntities[^1];
-                    _container.RemoveEntity(slotItem, removing);
-                    _hands.TryPickup(uid, removing, handsComp: hands);
-                    return;
+                }
+
+                var removing = storage.Container.ContainedEntities[^1];
+                SaveLocation(storage, removing);
+                _container.RemoveEntity(slotItem, removing);
+                _hands.TryPickup(uid, removing, handsComp: hands);
+                return;
             }
 
             if (!_storage.CanInsert(slotItem, handItem.Value, out var reason))
@@ -153,7 +202,14 @@ public sealed class SmartEquipSystem : EntitySystem
             }
 
             _hands.TryDrop(uid, hands.ActiveHand, handsComp: hands);
-            _storage.Insert(slotItem, handItem.Value, out var stacked, out _);
+
+            var loc = LoadLocation(storage, handItem.Value);
+            EntityUid? stacked;
+
+            if (loc != null && _storage.ItemFitsInGridLocation(handItem.Value, slotItem, loc.Value))
+                _storage.InsertAt(slotItem, handItem.Value, loc.Value, out stacked);
+            else
+                _storage.Insert(slotItem, handItem.Value, out stacked);
 
             if (stacked != null)
                 _hands.TryPickup(uid, stacked.Value, handsComp: hands);
@@ -162,7 +218,7 @@ public sealed class SmartEquipSystem : EntitySystem
         }
 
         // case 3 (itemslot item):
-        if (TryComp<ItemSlotsComponent>(slotItem, out var slots))
+        if (TryComp<ItemSlotsComponent>(slotItem, out var slots) && !ignoreStorage)
         {
             if (handItem == null)
             {

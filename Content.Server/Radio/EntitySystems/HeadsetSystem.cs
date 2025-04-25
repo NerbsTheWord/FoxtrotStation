@@ -5,6 +5,12 @@ using Content.Server.Radio.Components;
 using Content.Server.Speech;
 using Content.Shared.Chat;
 using Content.Shared.Inventory.Events;
+using Content.Shared.Language.Components;
+using Content.Shared.Cuffs; // DeltaV
+using Content.Shared.Cuffs.Components; // DeltaV
+using Content.Shared.Hands.Components; // DeltaV
+using Content.Shared.Inventory.Events;
+using Content.Shared.Popups; // DeltaV
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
 using Content.Shared.Radio.EntitySystems;
@@ -18,6 +24,8 @@ public sealed class HeadsetSystem : SharedHeadsetSystem
     [Dependency] private readonly INetManager _netMan = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly LanguageSystem _language = default!;
+    [Dependency] private readonly SharedCuffableSystem _cuffable = default!; // DeltaV
+    [Dependency] private readonly SharedPopupSystem _popup = default!; // DeltaV
 
     public override void Initialize()
     {
@@ -104,15 +112,20 @@ public sealed class HeadsetSystem : SharedHeadsetSystem
     private void OnHeadsetReceive(EntityUid uid, HeadsetComponent component, ref RadioReceiveEvent args)
     {
         var parent = Transform(uid).ParentUid;
-        if (TryComp(parent, out ActorComponent? actor))
+        if (!TryComp(parent, out ActorComponent? actor))
+            return;
+
+        var hasSpeakerComponent = TryComp<LanguageSpeakerComponent>(args.MessageSource, out var languageSpeakerComponent);
+        var canUnderstand = _language.CanUnderstand(
+            parent,
+            args.Language.ID,
+            hasSpeakerComponent ? (args.MessageSource, languageSpeakerComponent) : null);
+
+        var msg = new MsgChatMessage
         {
-            var canUnderstand = _language.CanUnderstand(parent, args.Language.ID);
-            var msg = new MsgChatMessage
-            {
-                Message = canUnderstand ? args.OriginalChatMsg : args.LanguageObfuscatedChatMsg
-            };
-            _netMan.ServerSendMessage(msg, actor.PlayerSession.Channel);
-        }
+            Message = canUnderstand ? args.OriginalChatMsg : args.LanguageObfuscatedChatMsg
+        };
+        _netMan.ServerSendMessage(msg, actor.PlayerSession.Channel);
     }
 
     private void OnEmpPulse(EntityUid uid, HeadsetComponent component, ref EmpPulseEvent args)

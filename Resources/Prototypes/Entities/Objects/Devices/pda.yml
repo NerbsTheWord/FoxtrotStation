@@ -354,11 +354,35 @@
   - type: Pda
     id: MimeIDCard
     state: pda-mime
-    idSlot: #  rewrite without sound because mime
-      name: ID Card
+    paiSlot:
+      priority: -2
+      ejectSound: null
+      insertSound: null
+      whitelist:
+        components:
+        - PAI
+    idSlot:
+      name: access-id-card-component-default
+      ejectSound: null # mime is silent
+      insertSound: null
       whitelist:
         components:
         - IdCard
+    penSlot:
+      startingItem: Pen
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+      ejectSound: null
+      insertSound: null
+  - type: CartridgeLoader
+    cartridgeSlot:
+      ejectSound: null
+      insertSound: null
+      whitelist:
+        components:
+        - Cartridge
   - type: PdaBorderColor
     borderColor: "#d7d7d0"
     accentHColor: "#333333"
@@ -373,7 +397,7 @@
   description: God's chosen PDA.
   components:
   - type: Sprite # DeltaV - Give Chaplain PDA Epistemics colors
-    sprite: DeltaV/Objects/Devices/pda.rsi
+    sprite: _DV/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
     - state: "light_overlay"
@@ -391,7 +415,7 @@
     borderColor: "#333333"
     accentVColor: "#8900c9" # DeltaV - Give Chaplain PDA Epistemics colors
   - type: Icon
-    sprite: DeltaV/Objects/Devices/pda.rsi # DeltaV - Give Chaplain PDA Epistemics colors
+    sprite: _DV/Objects/Devices/pda.rsi # DeltaV - Give Chaplain PDA Epistemics colors
     state: pda-chaplain
   - type: CartridgeLoader # Nyanotrasen - Glimmer Monitor
     preinstalled:

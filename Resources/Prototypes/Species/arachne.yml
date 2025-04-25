@@ -7,7 +7,7 @@
   defaultSkinTone: "#c0967f"
   markingLimits: MobArachneMarkingLimits
   dollPrototype: MobArachneDummy
-  skinColoration: HumanToned
+  skinColoration: HumanAnimal
   minAge: 18
   youngAge: 20
   oldAge: 70
@@ -39,7 +39,7 @@
       points: 2
       required: false
     Undershirt:
-      points: 1
+      points: 2 # FLOOF CHANGE
       required: false
     RightArm:
       points: 6
@@ -72,6 +72,8 @@
 - type: speciesBaseSprites
   id: MobArachneSprites
   sprites:
+    TailBehind: MobHumanoidAnyMarking
+    TailOversuit: MobHumanoidAnyMarking
     Head: MobHumanHead
     Face: MobHumanoidAnyMarking
     HeadSide: MobHumanoidAnyMarking

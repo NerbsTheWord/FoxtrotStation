@@ -8,9 +8,9 @@
   markingCategory: Tail
   speciesRestriction: [Lamia]
   sprites:
-  - sprite: DeltaV/Mobs/Customization/Lamia/lamia_tails.rsi
+  - sprite: _DV/Mobs/Customization/Lamia/lamia_tails.rsi
     state: bottom3tone1
-  - sprite: DeltaV/Mobs/Customization/Lamia/lamia_tails.rsi
+  - sprite: _DV/Mobs/Customization/Lamia/lamia_tails.rsi
     state: bottom3tone2
-  - sprite: DeltaV/Mobs/Customization/Lamia/lamia_tails.rsi
+  - sprite: _DV/Mobs/Customization/Lamia/lamia_tails.rsi
     state: bottom3tone3

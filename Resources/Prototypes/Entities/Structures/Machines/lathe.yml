@@ -51,6 +51,11 @@
   - type: TechnologyDatabase
   - type: Speech # Goobstation - Lathe message on recipes update
     speechSounds: Lathe
+  - type: AutomationSlots # Goobstation
+    slots:
+    - !type:AutomatedMaterialStorage
+      input: AutomationSlotMaterials
+      output: null
 
 # a lathe that can be sped up with space lube / slowed down with glue
 - type: entity
@@ -355,6 +360,7 @@
     - BluespaceManipulatorStockPart
     - BluespaceMatterBinStockPart
     - AdvMopItem
+    - TrashBagBluespace #DEN - Sanitation Station
     - WeaponSprayNozzle
     - ClothingBackpackWaterTank
     - MegaSprayBottle
@@ -367,6 +373,8 @@
     - VoiceTrigger
     - Igniter
     - HandHeldMassScanner
+    - HandHeldAtmosMonitor #DEN
+    - HandHeldPowerMonitor #DEN
     - PowerCellMicrortg
     - PowerCellMicroreactor
     - PowerCellHigh
@@ -410,12 +418,17 @@
     - RootSpeakTranslatorImplanter
     - AnimalTranslator
     - MofficTranslatorImplanter
+    - NehinaTranslatorImplanter
+    - RodentianTranslatorImplanter
+    - AlasetaTranslatorImplanter
+    - CaprineTranslatorImplanter
     - ClothingEyesNightVisionGoggles
     - ClothingEyesNightVisionDiagnosticGoggles
     - ClothingEyesThermalVisionGoggles
     - RCDAmmo #DeltaV
     - RCD #EE
     - RPD
+    - RadioHandheld
     # Shitmed Change
     - EnergyScalpel
     - EnergyCautery
@@ -559,9 +572,9 @@
     - TurboItemRechargerCircuitboard
     - PowerComputerCircuitboard
     - AlertsComputerCircuitboard
-    - AutolatheHyperConvectionMachineCircuitboard
-    - ProtolatheHyperConvectionMachineCircuitboard
-    - CircuitImprinterHyperConvectionMachineCircuitboard
+    # - AutolatheHyperConvectionMachineCircuitboard
+    # - ProtolatheHyperConvectionMachineCircuitboard
+    # - CircuitImprinterHyperConvectionMachineCircuitboard
     - FatExtractorMachineCircuitboard
     - FlatpackerMachineCircuitboard
     - SheetifierMachineCircuitboard
@@ -1042,9 +1055,20 @@
       - BoxShotgunBirdshot
       - BoxShotgun00Buckshot
       - BoxShotgun0000Buckshot
+      - RadioHandheldSecurity
+      - WeaponCaseShort # Frontier
+      - WeaponCaseLong # Frontier
+      - WeaponCaseHeavy # Frontier
+      - WeaponCaseShortAmmo # Frontier
+      - WeaponCaseShortExplosives # Frontier
+      - WeaponCaseShortDocuments # Frontier
+      - CrossbowBolt # Frontier
+      - CrossbowBoltBroadhead # Frontier
+      - ClothingBeltQuiverCrossbow # Frontier
     dynamicRecipes:
       - Truncheon
       - Terminus
+      - CrossbowModern # Frontier
       - BoxShotgunIncendiary
       - BoxShotgunUranium
       - EncryptionKeySyndie
@@ -1052,10 +1076,12 @@
       - CartridgeMagnumIncendiary
       - CartridgePistolIncendiary
       - CartridgeRifleIncendiary
+      - CrossbowBoltIncendiary # Frontier
       - CartridgeLightRifleUranium
       - CartridgeMagnumUranium
       - CartridgePistolUranium
       - CartridgeRifleUranium
+      - CrossbowBoltUranium # Frontier
       - ExplosivePayload
       - FlashPayload
       - GrenadeBlast
@@ -1394,8 +1420,15 @@
       - SheetifierMachineCircuitboard
       - PortableGeneratorPacmanMachineCircuitboard
       - PortableGeneratorSuperPacmanMachineCircuitboard
+      - RoboticArmCircuitboard
+      - ConstructorCircuitboard
+      - StorageBinCircuitboard
+      - InteractorCircuitboard
+      - LatheUpgradeKitHyper
+      - LatheUpgradeKitCryo
+      - UpgradeKitAutomation
       - PortableGeneratorJrPacmanMachineCircuitboard
-      - AutolatheHyperConvectionMachineCircuitboard
+      # - AutolatheHyperConvectionMachineCircuitboard
       - SolarControlComputerCircuitboard
       - SolarTrackerElectronics # Actual solar panels are not manufacturable
       - EmitterCircuitboard
@@ -1414,6 +1447,8 @@
       - WeaponParticleDecelerator
       - ClothingMaskWeldingGas
       - ClothingShoesBootsMagSci
+      - HandHeldAtmosMonitor
+      - HandHeldPowerMonitor
       # Routers and monitors
       - PowerComputerCircuitboard
       - AlertsComputerCircuitboard
@@ -1480,6 +1515,7 @@
     # Machines and computers
     - CargoTelepadMachineCircuitboard
     - OreProcessorMachineCircuitboard
+    - RadioHandheld
     # NOTE: advanced tools, industrial ore processor, expeds board are not added here as those are the very few things epi provides for cargo
   - type: MaterialStorage
     whitelist:
@@ -1537,6 +1573,7 @@
     - WeaponSprayNozzle
     - ClothingBackpackWaterTank
     - MegaSprayBottle
+    - TrashBagBluespace
     # Machines and computers
     - SeedExtractorMachineCircuitboard
     - HydroponicsTrayMachineCircuitboard
@@ -1858,6 +1895,11 @@
       - TowelColorSilver
       - TowelColorMime
       - TowelColorNT
+      # TheDen - Aprons
+      - ClothingWaistApron
+      - ClothingWaistApronCheckered
+      - ClothingWaistApronStripesHorizontal
+      - ClothingWaistApronStripesVertical
   - type: EmagLatheRecipes
     emagStaticRecipes:
     - ClothingHeadHatCentcomcap
@@ -2132,6 +2174,12 @@
       - PlushieLoveable
       - PlushieDeer
       - PlushieIpc
+      - PlushieFelinid
+      - PlushieOni
+      - PlushieHarpy
+      - PlushieRodentia
+      - PlushieFeroxi
+      - PlushieChitinid
       - PlushieGrey
       - PlushieRedFox
       - PlushiePurpleFox
