@@ -219,9 +219,10 @@
   - type: Gun
     fireRate: 4
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/silenced.ogg
+      path: /Audio/_Goobstation/Weapons/Guns/Gunshots/bwuh.ogg
       params:
-        volume: -14
+        volume: -5
+        maxDistance: 3
     availableModes:
     - SemiAuto
     fireOnDropChance: 0.1
