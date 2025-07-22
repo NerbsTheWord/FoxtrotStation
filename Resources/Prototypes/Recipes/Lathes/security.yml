@@ -361,7 +361,7 @@
   id: MagazineBoxCaselessRifleRubber
   result: MagazineBoxCaselessRifleRubber
   materials:
-    Steel: 720
+    Plastic: 680
 
 - type: latheRecipe
   parent: BaseAmmoRecipe
