@@ -520,14 +520,14 @@
   components:
   - type: StationEvent
     earliestStart: 90
-    minimumPlayers: 40
+    minimumPlayers: 20
     weight: 1 # Zombies was happening basically every single survival round, so now it's super rare
     duration: 1
   - type: ZombieRule
   - type: AntagSelection
     definitions:
     - prefRoles: [ InitialInfected ]
-      max: 3
+      max: 1
       playerRatio: 10
       blacklist:
         components:
